@@ -1,0 +1,6 @@
+{
+  "prefix": "s/",
+  "mainColor": "#4EFF4F",
+  "mongo": "mongodb+srv://megumin:megumin@cluster0.ibdvn.mongodb.net/SynthDatabase?retryWrites=true&w=majority",
+  "owners": ["524858289805197317", "765363887561506837", "297130271864520705"]
+}
