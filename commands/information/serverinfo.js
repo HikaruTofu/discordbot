@@ -52,17 +52,16 @@ export default {
             { name: "Guild Owner", value: `${owner}`, inline: true },
             { name: "Region", value: `${regionUp}`, inline: true },
             { name: "Server ID", value: `${interaction.guild.id}`, inline: true },
-            { name: "Created At", value: interaction.guild.createdAt.toLocaleString(), inline: false },
-            { name: "Verification Level", value: `${interaction.guild.verificationLevel}`, inline: true },
-            { name: `Server Features`, value: `${interaction.guild.features.join(" | ") || 'No Features'}`, inline: false },
+            { name: "Created At", value: interaction.guild.createdAt.toLocaleString(), inline: true },
             { name: `Server Boost Tier`, value: `${interaction.guild.premiumTier || 'Zero Tier'}`, inline: true },
             { name: `Server Boosts`, value: `${interaction.guild.premiumSubscriptionCount || 'No Boost'}`, inline: true },
-            { name: `Channels **(${chs})**`, value: `Text Channel - **${text}** ┇ Voice Channel - **${voice}**`, inline: false },
-            { name: `Total | Members | BOT Count`, value: `${interaction.guild.members.cache.size} | ${interaction.guild.members.cache.filter(member => !member.user.bot).size} | ${interaction.guild.members.cache.filter(member => member.user.bot).size}`, inline: false },
+            { name: "Verification Level", value: `${interaction.guild.verificationLevel}`, inline: true },
+            { name: `Channels **(${chs})**`, value: `Text Channel - **${text}** ┇ Voice Channel - **${voice}**`, inline: true },
+            { name: `Total | Members | BOT`, value: `${interaction.guild.members.cache.size} | ${interaction.guild.members.cache.filter(member => !member.user.bot).size} | ${interaction.guild.members.cache.filter(member => member.user.bot).size}`, inline: true },
             { name: `Roles **(${rolesCount})**`, value: `Untuk melihat semua role server, gunakan perintah \`/serverinfo roles\``, inline: false },
             { name: `Emojis **(${emojiSize})**`, value: `Untuk melihat semua emoji server, gunakan perintah \`/serverinfo emojis\``, inline: true }
         )
-        .setFooter({ text: client.user.username, iconURL: client.user.displayAvatarURL() }) // Corrected
+        .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: `${interaction.user.displayAvatarURL()}` })
         .setTimestamp();
         await interaction.followUp({ embeds: [embed] });
     } else if (interaction.options.getString('option') === 'roles') {

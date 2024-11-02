@@ -20,6 +20,7 @@ export default {
       let user = interaction.options.getMember('option') || interaction.member; // Corrected here
       const roles = user.roles.cache.map(role => role.toString()).join("\n");
       const roleslist = roles.replace("@everyone, ", "");
+      
       const flags = {
         DISCORD_EMPLOYEE: 'Discord Employee',
         DISCORD_PARTNER: 'Discord Partner',
@@ -33,10 +34,15 @@ export default {
         TEAM_USER: 'Team User',
         SYSTEM: 'System',
         VERIFIED_BOT: 'Verified Bot',
-        EARLY_VERIFIED_DEVELOPER: 'Early Verified Developer'
+        EARLY_VERIFIED_DEVELOPER: 'Early Verified Developer',
+        ACTIVE_DEVELOPER: 'Active Developer'
       };
+      // Retrieve user flags
+      
+      const userFlagsArray = user.user.flags.toArray();
+      console.log(userFlagsArray); // Debugging line to check flags    
 
-      const userFlags = user.user.flags.toArray ? user.user.flags.toArray().map(flag => flags[flag]).join('\n') : 'None';
+      const userFlags = userFlagsArray.length ? userFlagsArray.map(flag => flags[flag] || flag).join('\n') : 'No badges';
 
       // Check user presence status
       let status = 'Offline'; // Default to Offline
@@ -67,15 +73,22 @@ export default {
 
       // Membuat embed menggunakan EmbedBuilder
       const embed = new EmbedBuilder()
-      .setTitle(`${user.user.tag}'s Information`) // Set title as a string
-      .setThumbnail(user.displayAvatarURL()) // Set the user's avatar as the thumbnail
+      .setTitle(`${user.user.tag}'s Information`)
+      .setThumbnail(user.displayAvatarURL())
       .setDescription('\n')
       .addFields(
         { name: "Name", value: user.user.username || 'Unknown', inline: true },
-        { name: "Status", value: status, inline: true },
-        { name: "Roles", value: rolesDisplay, inline: true },
-        { name: "Flags", value: flagsDisplay, inline: true }
-      );
+        { name: "ID", value: user.user.id || 'Unknown', inline: true },
+        { name: "Current Status", value: status, inline: true },
+        { name: "Custom Status", value: user.presence?.activities[0]?.state || `User  doesn't have a custom status!`, inline: true },
+        { name: "Activity", value: user.presence?.activities[0]?.name || `User  isn't playing a game!`, inline: true },
+        { name: "User Roles", value: rolesDisplay, inline: true },
+        { name: "User Badges", value: flagsDisplay, inline: true },
+        { name: "Creation Date", value: user.user.createdAt.toLocaleDateString("en-US"), inline: true },
+        { name: "Joined Date", value: user.joinedAt.toLocaleDateString("en-US"), inline: true }
+      )
+      .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: `${interaction.user.displayAvatarURL()}` })
+      .setTimestamp();
 
       await interaction.editReply({ embeds: [embed] });
     } catch (error) {
