@@ -1,15 +1,18 @@
 // events/ready.js
-import chalk from "chalk";
-import moment from "moment-timezone";
-import fs from "fs";
-import { ActivityType } from "discord.js";
+import chalk from "chalk"; // Untuk memberi warna pada output console
+import moment from "moment-timezone"; // Untuk menangani waktu dengan zona
+import fs from "fs"; // Untuk operasi file (meskipun tidak digunakan di sini)
+import { ActivityType } from "discord.js"; // Untuk jenis aktivitas di Discord
 
-const homePath = process.cwd();
+const homePath = process.cwd(); // Mendapatkan direktori kerja saat ini
 
 export default (client) => {
-  	console.log(chalk.bgBlue(`[${moment().tz("Asia/Makassar").format("hh:mm:ss")}]`) + ` Logged In As ${client.user.tag}`);
-	client.user.setActivity({
-		name: `Honkai: Star Rail`,
-		type: ActivityType.Streaming
-	  });
+  // Menampilkan pesan di console saat bot siap
+  console.log(chalk.bgBlue(`[${moment().tz("Asia/Makassar").format("hh:mm:ss")}]`) + ` Logged In As ${client.user.tag}`);
+  
+  // Mengatur aktivitas bot
+  client.user.setActivity({
+    name: `Robin Album`, // Nama aktivitas
+    type: ActivityType.Listening // Tipe aktivitas
+  });
 };

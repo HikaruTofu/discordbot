@@ -1,19 +1,16 @@
-import { readdirSync } from 'fs';
+import { readdirSync } from 'fs'; // Untuk membaca direktori
 import {
   Client,
-  ActivityType,
-  GatewayIntentBits,
-  REST,
-  Routes,
   SlashCommandBuilder,
-} from "discord.js";
+} from "discord.js"; // Mengimpor kelas dan fungsi dari discord.js
 
-export default async (Client) => {
-  const events = readdirSync('./events/');
+export default async (client) => {
+  const events = readdirSync('./events/'); // Ambil semua file event dari direktori
 
+  // Loop melalui setiap file event
   for (const event of events) {
-    const file = await import(`../events/${event}`);
-    // Pastikan Anda menggunakan 'client' (huruf kecil) di sini
-    Client.on(event.split('.')[0], (...args) => file.default(Client, ...args));
+    const file = await import(`../events/${event}`); // Impor file event
+    // Daftarkan event ke client
+    client.on(event.split('.')[0], (...args) => file.default(client, ...args)); // Panggil fungsi default dari file event
   }
 };

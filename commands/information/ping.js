@@ -2,7 +2,7 @@ import { EmbedBuilder } from "discord.js";
 
 export default {
   name: "ping",
-  description: "Returns websocket latency",
+  description: "Mengembalikan latency websocket",
 
   run: async (client, interaction) => {
     try {
