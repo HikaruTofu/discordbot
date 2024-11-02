@@ -1,4 +1,4 @@
-command template (im too lazy)
+Command Template
 ```js
 import { EmbedBuilder } from "discord.js"; 
 
@@ -26,3 +26,44 @@ export default {
   },
 };
 ```
+
+command types (for easier one)
+```js
+{
+  name: "text",
+  type: 1, // STRING type
+  description: "Enter some text",
+  required: true,
+},
+{
+  name: "number",
+  type: 4, // INTEGER type
+  description: "Enter a number",
+  required: false,
+},
+{
+  name: "isActive",
+  type: 5, // BOOLEAN type
+  description: "Is this active?",
+  required: false,
+},
+{
+  name: "user",
+  type: 6, // USER type
+  description: "Select a user",
+  required: false,
+},
+{
+  name: "channel",
+  type: 7, // CHANNEL type
+  description: "Select a channel",
+  required: false,
+},
+{
+  name: "role",
+  type: 8, // ROLE type
+  description: "Select a role",
+  required: false,
+},
+```
+
