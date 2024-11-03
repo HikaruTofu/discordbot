@@ -1,6 +1,7 @@
 import { EmbedBuilder } from "discord.js"; 
 import nekoslife from "nekos.life";
 const neko = new nekoslife(); 
+import superagent from "superagent";
 
 const choices = ["hug", "kiss", "cuddle", "feed", "pat", "poke", "slap", "smug", "tickle", "wink"];
 
@@ -36,9 +37,11 @@ export default {
 
           // Check for the category and fetch the image
           if (category === "wink") {
-            const response = await getJson("https://some-random-api.com/animu/wink");
-            if (!response.success) throw new Error("API error");
-            imageUrl = response.data.link;
+            const response = await superagent.get("https://some-random-api.com/animu/wink");
+            if (!response.body || !response.body.url) {
+              throw new Error("API did not return a valid response");
+            }
+            const imageUrl = response.body.url;
           } else {
             // Fetch from nekos.life
             imageUrl = (await neko[category]()).url;

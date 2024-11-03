@@ -22,6 +22,7 @@
     "nekos.life": "^3.0.0",
     "parse-ms": "^4.0.0",
     "quick.db": "^9.1.7",
+    "superagent": "^10.1.1",
     "util": "^0.12.5"
   }
 }
