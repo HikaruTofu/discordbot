@@ -1,11 +1,11 @@
 import { EmbedBuilder } from "discord.js";
 
 const channelType = {
-    GUILD_TEXT: 'Text',
-    GUILD_VOICE: 'Voice',
-    GUILD_CATEGORY: 'Category',
-    GUILD_NEWS: 'Announcement',
-    GUILD_STORE: 'Store'
+    0: 'Text',              // GUILD_TEXT
+    2: 'Voice',             // GUILD_VOICE
+    4: 'Category',          // GUILD_CATEGORY
+    5: 'Announcement',      // GUILD_NEWS
+    6: 'Store'              // GUILD_STORE
 };
 
 export default {
@@ -31,23 +31,25 @@ export default {
                 return;
             }
 
+            // Log the channel type to see what it returns
+            console.log(`Channel Type: ${channel.type}`);
+
+            // Use the numeric channel type to get the human-readable type
             let type = channelType[channel.type] || 'Unknown';
 
-            const embed = new EmbedBuilder() // Use EmbedBuilder directly
-                .setTitle('Channel Information')
+            const embed = new EmbedBuilder()
+                .setAuthor({ name: `Channel Information`, iconURL: interaction.guild.iconURL() })
                 .setDescription('\n')
                 .addFields(
-                    { name: '✉️ Name:', value: channel.name, inline: false },
-                    { name: '🆔 ID:', value: channel.id, inline: false },
-                    { name: '🗂️ Type:', value: type, inline: false },
-                    { name: '📎 Raw Position:', value: channel.rawPosition.toString(), inline: false },
-                    { name: '📆 Created At:', value: channel.createdAt.toLocaleDateString('en-us'), inline: false },
-                    { name: '📜 Topic:', value: channel.topic || 'None', inline: false },
-                    { name: '🔞 NSFW:', value: channel.nsfw ? 'Yes' : 'No', inline: false }
+                    { name: 'Name:', value: `\`\`\`${channel.name}\`\`\``, inline: true },
+                    { name: 'ID:', value: `\`\`\`${channel.id}\`\`\``, inline: true },
+                    { name: 'Type:', value: `\`\`\`${type}\`\`\``, inline: true },
+                    { name: 'Created At:', value: `\`\`\`${channel.createdAt.toLocaleDateString('en-us')}\`\`\``, inline: true },
+                    { name: 'Topic:', value: `\`\`\`${channel.topic || 'None'}\`\`\``, inline: true },
+                    { name: 'NSFW:', value: `\`\`\`${channel.nsfw ? 'Yes' : 'No'}\`\`\``, inline: true }
                 )
                 .setTimestamp()
-                .setThumbnail(interaction.guild.iconURL({ dynamic: true }))
-                .setFooter({ text: client.user.username, iconURL: client.user.displayAvatarURL() });
+                .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: `${interaction.user.displayAvatarURL()}` });
 
             await interaction.followUp({ embeds: [embed] });
         } catch (error) {
