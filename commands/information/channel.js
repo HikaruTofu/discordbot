@@ -9,7 +9,7 @@ const channelType = {
 };
 
 export default {
-    name: "channelinfo",
+    name: "channel",
     description: "Memberikan informasi tentang suatu channel",
     options: [
         {
@@ -39,6 +39,7 @@ export default {
 
             const embed = new EmbedBuilder()
                 .setAuthor({ name: `Channel Information`, iconURL: interaction.guild.iconURL() })
+                .setColor('#78ceda')
                 .setDescription('\n')
                 .addFields(
                     { name: 'Name:', value: `\`\`\`${channel.name}\`\`\``, inline: true },

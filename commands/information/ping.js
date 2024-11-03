@@ -1,33 +1,25 @@
-import { EmbedBuilder } from "discord.js";
-
 export default {
   name: "ping",
   description: "Mengembalikan latency websocket",
 
   run: async (client, interaction) => {
     try {
-      await interaction.deferReply();
+      await interaction.deferReply(); // Deferring the reply
 
-      const sent = await interaction.reply({
+      // Send a follow-up message to indicate that we're pinging
+      const sent = await interaction.followUp({
         content: "Pinging...",
-        fetchReply: true,
+        fetchReply: true, // This allows you to get the message object
       });
 
+      // Calculate latency
       const latency = sent.createdTimestamp - interaction.createdTimestamp;
 
-      // const embed = new EmbedBuilder()
-      //   .setColor("#FF0000")
-      //   .setTitle("🏓 Pong!")
-      //   .setDescription(`Pong! 🏓\nLatency: ${latency}ms\nWebsocket: ${client.ws.ping}ms`)
-      //   .setTimestamp()
-      //   .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: `${interaction.user.displayAvatarURL()}` });
+      // Prepare the response message
+      const responseMessage = `Pong! 🏓\nLatency: ${latency}ms\nWebsocket: ${client.ws.ping}ms`;
 
-      // await interaction.followUp({ embeds: [embed] });
-
-      await interaction.editReply(
-        `Pong! 🏓\nLatency: ${latency}ms\nWebsocket: ${client.ws.ping}ms`,
-      );
-
+      // Send the final response
+      await interaction.editReply(responseMessage);
     } catch (error) {
       console.error(error);
       await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });

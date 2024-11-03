@@ -3,6 +3,8 @@ import { glob } from "glob"; // Untuk mengambil file dengan pola tertentu
 import { REST, Routes } from "discord.js"; // REST API untuk Discord
 import { fileURLToPath, pathToFileURL } from "url"; // Untuk mengonversi URL file
 import { dirname, resolve } from "path"; // Untuk menangani path file
+import chalk from "chalk"; // Untuk memberi warna pada output console
+import moment from "moment-timezone"; // Untuk menangani waktu dengan zona
 
 export default async (client) => {
   configDotenv(); // Muat variabel lingkungan
@@ -56,7 +58,7 @@ export default async (client) => {
       await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {
         body: arrayOfSlashCommands, // Daftarkan perintah
       });
-      console.log('Successfully registered application commands.'); // Log sukses
+      console.log(chalk.bgBlue(`[${moment().tz("Asia/Makassar").format("hh:mm:ss")}]`) + ` Slash commands has been successfully registered.`);
     } catch (error) {
       console.error(error); // Log error jika gagal
     }

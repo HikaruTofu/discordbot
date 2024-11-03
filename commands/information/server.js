@@ -1,8 +1,8 @@
 import { EmbedBuilder } from "discord.js";
 
 export default {
-  name: "serverinfo",
-  description: "gives information about server",
+  name: "server",
+  description: "memberikan informasi tentang server",
 
   run: async (client, interaction) => {
     await interaction.deferReply();
@@ -22,6 +22,7 @@ export default {
 
     let embed = new EmbedBuilder()
       .setAuthor({ name: `Server Information`, iconURL: interaction.guild.iconURL() })
+      .setColor('#78ceda')
       .addFields(
         { name: "Guild Owner", value: `${owner}`, inline: true },
         { name: "Region", value: `${regionUp}`, inline: true },

@@ -2,7 +2,7 @@ import { EmbedBuilder } from "discord.js";
 import ms from 'parse-ms'
 
 export default {
-  name: "userinfo",
+  name: "whois",
   description: "Memberikan informasi tentang suatu user",
   options: [
     {
@@ -88,7 +88,8 @@ export default {
         { name: "Joined Date", value: user.joinedAt.toLocaleDateString("en-US"), inline: true }
       )
       .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: `${interaction.user.displayAvatarURL()}` })
-      .setTimestamp();
+      .setTimestamp()
+      .setColor('#78ceda');
 
       await interaction.editReply({ embeds: [embed] });
     } catch (error) {
