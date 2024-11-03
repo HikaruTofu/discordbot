@@ -38,7 +38,7 @@ export default {
 
       // Menghapus pesan
       interaction.channel.bulkDelete(deleteAmount, { filterOld: true }).then(async (messages) => {
-        await interaction.reply(`aku berhasil menghapus total \`${messages.size}/${amount}\` pesan!`);
+        await interaction.followUp(`aku berhasil menghapus total \`${messages.size}/${amount}\` pesan!`);
         setTimeout(async () => {
             await interaction.deleteReply();
         }, 2000);

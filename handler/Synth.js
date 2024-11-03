@@ -1,6 +1,7 @@
 // handler/Synth.js
 import { Client, Collection } from "discord.js";
 import db from 'quick.db';
+import playerconfig from '../config/config.js'
 
 class SynthClient {
   constructor() {
@@ -13,6 +14,7 @@ class SynthClient {
     this.recent = new Set(); // Data terbaru
     this.snipes = new Map(); // Pesan yang dihapus
     this.esnipes = new Map(); // Pesan langsung yang dihapus
+    this.config = playerconfig(Client);
   }
 
   // Metode lainnya sesuai kebutuhan...
