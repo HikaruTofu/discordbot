@@ -38,16 +38,16 @@ export default {
             let type = channelType[channel.type] || 'Unknown';
 
             const embed = new EmbedBuilder()
-                .setAuthor({ name: `Channel Information`, iconURL: interaction.guild.iconURL() })
+                .setAuthor({ name: `Informasi Channel`, iconURL: interaction.guild.iconURL() })
                 .setColor('#78ceda')
                 .setDescription('\n')
                 .addFields(
-                    { name: 'Name:', value: `\`\`\`${channel.name}\`\`\``, inline: true },
-                    { name: 'ID:', value: `\`\`\`${channel.id}\`\`\``, inline: true },
-                    { name: 'Type:', value: `\`\`\`${type}\`\`\``, inline: true },
-                    { name: 'Created At:', value: `\`\`\`${channel.createdAt.toLocaleDateString('en-us')}\`\`\``, inline: true },
-                    { name: 'Topic:', value: `\`\`\`${channel.topic || 'None'}\`\`\``, inline: true },
-                    { name: 'NSFW:', value: `\`\`\`${channel.nsfw ? 'Yes' : 'No'}\`\`\``, inline: true }
+                    { name: 'Nama', value: `\`\`\`${channel.name}\`\`\``, inline: true },
+                    { name: 'ID', value: `\`\`\`${channel.id}\`\`\``, inline: true },
+                    { name: 'Tipe', value: `\`\`\`${type}\`\`\``, inline: true },
+                    { name: 'Dibuat pada', value: `\`\`\`${channel.createdAt.toLocaleDateString('en-us')}\`\`\``, inline: true },
+                    { name: 'Topik', value: `\`\`\`${channel.topic || 'None'}\`\`\``, inline: true },
+                    { name: 'NSFW', value: `\`\`\`${channel.nsfw ? 'Yes' : 'No'}\`\`\``, inline: true }
                 )
                 .setTimestamp()
                 .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: `${interaction.user.displayAvatarURL()}` });
@@ -55,7 +55,7 @@ export default {
             await interaction.followUp({ embeds: [embed] });
         } catch (error) {
             console.error(error); // Handle errors
-            await interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
+            await interaction.editReply({ content: 'aduh, ada error pas ngejalanin command ini', ephemeral: true });
         }
     },
 };

@@ -73,19 +73,19 @@ export default {
 
       // Membuat embed menggunakan EmbedBuilder
       const embed = new EmbedBuilder()
-      .setTitle(`${user.user.tag}'s Information`)
+      .setTitle(`Informasi seorang ${user.user.tag}`)
       .setThumbnail(user.displayAvatarURL())
       .setDescription('\n')
       .addFields(
-        { name: "Name", value: user.user.username || 'Unknown', inline: true },
+        { name: "Nama", value: user.user.username || 'Unknown', inline: true },
         { name: "ID", value: user.user.id || 'Unknown', inline: true },
-        { name: "Current Status", value: status, inline: true },
-        { name: "Custom Status", value: user.presence?.activities[0]?.state || `User  doesn't have a custom status!`, inline: true },
-        { name: "Activity", value: user.presence?.activities[0]?.name || `User  isn't playing a game!`, inline: true },
-        { name: "User Roles", value: rolesDisplay, inline: true },
-        { name: "User Badges", value: flagsDisplay, inline: true },
-        { name: "Creation Date", value: user.user.createdAt.toLocaleDateString("en-US"), inline: true },
-        { name: "Joined Date", value: user.joinedAt.toLocaleDateString("en-US"), inline: true }
+        { name: "Status Sekarang", value: status, inline: true },
+        { name: "Status Kustom", value: user.presence?.activities[0]?.state || `dia gapunya status`, inline: true },
+        { name: "Aktivitas", value: user.presence?.activities[0]?.name || `User  isn't playing a game!`, inline: true },
+        { name: "Roles", value: rolesDisplay, inline: true },
+        { name: "Badges", value: flagsDisplay, inline: true },
+        { name: "Join discord pada?", value: user.user.createdAt.toLocaleDateString("en-US"), inline: true },
+        { name: "Join server pada?", value: user.joinedAt.toLocaleDateString("en-US"), inline: true }
       )
       .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: `${interaction.user.displayAvatarURL()}` })
       .setTimestamp()
@@ -94,7 +94,7 @@ export default {
       await interaction.editReply({ embeds: [embed] });
     } catch (error) {
         console.error(error); // Menangani kesalahan
-        await interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
+        await interaction.editReply({ content: 'aduh, ada error pas ngejalanin command ini', ephemeral: true });
     }
   },
 };

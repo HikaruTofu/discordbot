@@ -51,7 +51,7 @@ export default {
         } catch (ex) {
           console.error("Error fetching image:", ex); // Log the error
           return new EmbedBuilder()
-            .setDescription("Failed to fetch image. Try again!")
+            .setDescription("gagal mengambil foto, maaf ya")
             .setColor('#78ceda')
             .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: `${interaction.user.displayAvatarURL()}` })
             .setTimestamp();

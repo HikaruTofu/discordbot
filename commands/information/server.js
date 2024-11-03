@@ -21,16 +21,16 @@ export default {
     let owner = await client.users.fetch(interaction.guild.ownerId).then(o => o.tag);
 
     let embed = new EmbedBuilder()
-      .setAuthor({ name: `Server Information`, iconURL: interaction.guild.iconURL() })
+      .setAuthor({ name: `Informasi tentang ${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
       .setColor('#78ceda')
       .addFields(
-        { name: "Guild Owner", value: `${owner}`, inline: true },
+        { name: "Owner Server", value: `${owner}`, inline: true },
         { name: "Region", value: `${regionUp}`, inline: true },
         { name: "Server ID", value: `${interaction.guild.id}`, inline: true },
-        { name: "Created At", value: interaction.guild.createdAt.toLocaleString(), inline: true },
-        { name: `Server Boost Tier`, value: `${interaction.guild.premiumTier || 'Zero Tier'}`, inline: true },
-        { name: `Server Boosts`, value: `${interaction.guild.premiumSubscriptionCount || 'No Boost'}`, inline: true },
-        { name: "Verification Level", value: `${interaction.guild.verificationLevel}`, inline: true },
+        { name: "Dibuat pada", value: interaction.guild.createdAt.toLocaleString(), inline: true },
+        { name: `Tingkat Boost Server`, value: `${interaction.guild.premiumTier || 'Zero Tier'}`, inline: true },
+        { name: `Total Boost Server`, value: `${interaction.guild.premiumSubscriptionCount || 'No Boost'}`, inline: true },
+        { name: "Level Verifikasi", value: `${interaction.guild.verificationLevel}`, inline: true },
         { name: `Channels **(${chs})**`, value: `Text Channel - **${text}** ┇ Voice Channel - **${voice}**`, inline: true },
         { name: `Total | Members | BOT`, value: `${interaction.guild.members.cache.size} | ${interaction.guild.members.cache.filter(member => !member.user.bot).size} | ${interaction.guild.members.cache.filter(member => member.user.bot).size}`, inline: true },
         { name: `Roles **(${rolesCount})**`, value: rolesList, inline: false },

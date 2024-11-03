@@ -32,7 +32,7 @@ export default {
       const code = interaction.options.getString("code");
       let evaled;
 
-      if (code.includes(`token`)) {
+      if (code.includes(`process.env.DISCORD_TOKEN`)) {
         evaled = warningTokenMessage[Math.floor(Math.random() * warningTokenMessage.length)];
         console.log(`${interaction.user.tag} tried to evaluate code that involves tokens and privacy.`);
       } else {

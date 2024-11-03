@@ -22,7 +22,7 @@ export default {
       await interaction.editReply(responseMessage);
     } catch (error) {
       console.error(error);
-      await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+      await interaction.editReply({ content: 'aduh, ada error pas ngejalanin command ini', ephemeral: true });
     }
   },
 };
