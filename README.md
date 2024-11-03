@@ -1,4 +1,4 @@
-an remake with discordjs v14 from my oldest bot named Synth.
+an remake with discordjs v14 from my oldest bot named Synth & Northerion.
 
 Command Template
 ```js
