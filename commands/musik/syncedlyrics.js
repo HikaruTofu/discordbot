@@ -1,5 +1,6 @@
 import { EmbedBuilder } from "discord.js"; 
 import { useQueue, useMainPlayer } from "discord-player";
+import { isInVoiceChannel } from '../../utils/voicechannel.js'; 
 
 export default {
   name: "syncedlyrics", // Set the command name
@@ -9,42 +10,34 @@ export default {
     try {
       await interaction.deferReply(); 
 
-      const player = useMainPlayer();
-      const queue = useQueue(interaction.guild);
-      if (!queue?.isPlaying()) return interaction.editReply({ content: 'Sedang tidak ada lagu yang diputar loh', ephemeral: true });
+      const queue = useQueue(interaction.guild.id); // Initialize the queue here
+      const inVoiceChannel = isInVoiceChannel(interaction); // Check if the user is in a voice channel
+      if (!inVoiceChannel) {
+        return await interaction.followUp({ content: 'Anda tidak berada di dalam saluran suara.' });
+      }
+
+      if (!queue?.isPlaying()) {
+        return await interaction.followUp({ content: 'Sedang tidak ada lagu yang diputar loh', ephemeral: true });
+      }
 
       const metadataThread = queue.metadata.lyricsThread;
-      if (metadataThread && !metadataThread.archived) return interaction.editReply({ content: `lirik thread sudah kebuat loh di <${queue.metadata.lyricsThread}>` });
+      if (metadataThread && !metadataThread.archived) {
+        return await interaction.followUp({ content: `Lirik thread sudah kebuat loh di <${queue.metadata.lyricsThread}>` });
+      }
 
+      const player = useMainPlayer();
       const results = await player.lyrics
         .search({
             q: queue.currentTrack.title
         })
         .catch(async (e) => {
             console.log(e);
-            return inter.editReply({ content: `Mohon maaf, tetapi ada kerusakan saat menjalakannya.` });
+            return await interaction.followUp({ content: `Mohon maaf, tetapi ada kerusakan saat menjalakannya.` });
         });
+
       const lyrics = results?.[0];
-      
-      const embed2 = new EmbedBuilder()
-            .setAuthor({ name: `Yah, saya gagal untuk mencari liriknya...mau coba lagi?` }) // Pass an object here
-            .setDescription(`\`\`\`${queue.currentTrack.title}\`\`\``)
-            .setColor('#78ceda');
-      if (!lyrics?.plainLyrics) 
-        return interaction.editReply({ embeds: embed2 });
-        setTimeout(async () => {
-            await interaction.deleteReply();
-        }, 3000);
-
-      if (true) { 
-        if (!interaction.member.voice.channel) {
-          return await interaction.editReply({ content: 'aduh, kamu ada engga ada di voice channel', ephemeral: true });
-        }
-
-        // Check if the user is in the same voice channel as the bot
-        if (interaction.guild.members.me.voice.channel && interaction.member.voice.channel.id !== interaction.guild.members.me.voice.channel.id) {
-          return await interaction.editReply({ content: 'kita aja di voice channel yang berbeda', ephemeral: true });
-        }
+      if (!lyrics?.plainLyrics) {
+        return await interaction.followUp({ content: `Yah, saya gagal untuk mencari liriknya...mau coba lagi?` });
       }
 
       const thread = await queue.metadata.channel.threads.create({
@@ -57,17 +50,17 @@ export default {
       });
 
       const syncedLyrics = queue?.syncedLyrics(lyrics);
-      syncedLyrics.onChange(async (lyrics) => {
+      syncedLyrics.onChange(async (newLyrics) => {
         await thread.send({
-        content: lyrics
+          content: newLyrics
         });
       });
       syncedLyrics?.subscribe();
 
-      return interaction.editReply({ content: `lirik telah berhasil di sinkronkan di <${thread}>!` });
+      return await interaction.followUp({ content: `Lirik telah berhasil di sinkronkan di <${thread}>!` });
     } catch (error) {
       console.error(error); // Handle errors
-      await interaction.editReply({ content: 'aduh, ada error pas ngejalanin command ini', ephemeral: true });
+      await interaction.followUp({ content: 'Aduh, ada error pas ngejalanin command ini', ephemeral: true });
     }
   },
 };

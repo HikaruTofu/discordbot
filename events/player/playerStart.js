@@ -10,7 +10,7 @@ export default async (queue, track) => {
 
     try {
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `Musik dimulai:` }) // Pass an object here
+            .setAuthor({ name: `🎶 | Musik dimulai:` }) // Pass an object here
             .setDescription(`\`\`\`${track.title}\`\`\``)
             .setColor('#78ceda')
         

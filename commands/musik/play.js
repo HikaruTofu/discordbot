@@ -1,76 +1,72 @@
-import { EmbedBuilder } from "discord.js"; 
-import { QueryType, useMainPlayer } from "discord-player"; // Ensure you have the correct import for QueryType
+import { EmbedBuilder } from 'discord.js';
+import { useMainPlayer, QueryType } from 'discord-player'; // Ensure QueryType is imported
+import { isInVoiceChannel } from '../../utils/voicechannel.js'; 
 
 export default {
-  name: "play", // Set the command name
-  description: "Play a song in your voice channel", // Set the command description
-  options: [
-    {
-      name: "song",
-      type: 3, // STRING type
-      description: "The name of the song to play",
-      required: true,
-    },
-  ],
+    name: "play",
+    description: "putar lagu", 
+    options: [
+        {
+            name: "query",
+            type: 3, 
+            description: "mau cari lagu apa?",
+            required: true,
+        },
+    ],
 
-  run: async (client, interaction) => {
-    const player = useMainPlayer();
-    const song = interaction.options.getString('song');
+    run: async (client, interaction) => {
+        try {
+            await interaction.deferReply(); // Defer the reply to indicate processing
+            const inVoiceChannel = isInVoiceChannel(interaction);
+            if (!inVoiceChannel) {
+                return; // Early return if not in voice channel
+            }
 
-    try {
-      await interaction.deferReply(); 
+            const player = useMainPlayer();
+            const query = interaction.options.getString('query');
+            const searchResult = await player.search(query, {
+                searchEngine: QueryType.AUTO,
+            });
 
-      if (true) { 
-        if (!interaction.member.voice.channel) {
-          return await interaction.editReply({ content: 'aduh, kamu ada engga ada di voice channel', ephemeral: true });
+            if (!searchResult.hasTracks()) {
+                return await interaction.followUp({ content: 'maaf, tapi aku tidak menemukan lagu yang diminta' });
+            }
+
+            try {
+                const { track } = await player.play(interaction.member.voice.channel, searchResult.tracks[0], { 
+                    nodeOptions: {
+                        metadata: {
+                            channel: interaction.channel
+                        },
+                        volume: client.config.opt.volume,
+                        leaveOnEmpty: client.config.opt.leaveOnEmpty,
+                        leaveOnEmptyCooldown: client.config.opt.leaveOnEmptyCooldown,
+                        leaveOnEnd: client.config.opt.leaveOnEnd,
+                        leaveOnEndCooldown: client.config.opt.leaveOnEndCooldown,
+                    }
+                });
+
+                const embed = new EmbedBuilder()
+                    .setAuthor({ name: `⏱ | Mencari lagu yang diminta` })
+                    .setDescription(`\`\`\`${track.title}\`\`\``)
+                    .setColor('#78ceda');
+                
+                await interaction.followUp({ embeds: [embed] }); // Follow up with the embed message
+                setTimeout(async () => {
+                    await interaction.deleteReply(); // Delete the reply after a timeout
+                }, 3500);
+            } catch (error) {
+                // Handle errors during playback
+                console.error(error); // Log the error for debugging
+                await interaction.followUp({
+                    content: 'An error has occurred while trying to play the track.',
+                });
+            }
+        } catch (error) {
+            console.error(error); // Log the error for debugging
+            await interaction.followUp({
+                content: 'aduh, ada error pas ngejalanin command ini: ' + error.message,
+            });
         }
-
-        // Check if the user is in the same voice channel as the bot
-        if (interaction.guild.members.me.voice.channel && interaction.member.voice.channel.id !== interaction.guild.members.me.voice.channel.id) {
-          return await interaction.editReply({ content: 'kita aja di voice channel yang berbeda', ephemeral: true });
-        }
-      }
-
-      const res = await player.search(song, {
-        requestedBy: interaction.member,
-        searchEngine: QueryType.AUTO
-      });
-
-      if (!res?.tracks.length) {
-        return await interaction.editReply({ content: 'maaf, tapi aku engga nemu lagu yang diminta', ephemeral: true });
-      }
-
-      // Attempt to play the song
-      try {
-        const { track } = await player.play(interaction.member.voice.channel, song, {
-          nodeOptions: {
-            metadata: {
-              channel: interaction.channel
-            },
-            volume: client.config.opt.volume,
-            leaveOnEmpty: client.config.opt.leaveOnEmpty,
-            leaveOnEmptyCooldown: client.config.opt.leaveOnEmptyCooldown,
-            leaveOnEnd: client.config.opt.leaveOnEnd,
-            leaveOnEndCooldown: client.config.opt.leaveOnEndCooldown,
-          }
-        });
-
-        const embed = new EmbedBuilder()
-            .setAuthor({ name: `⏱ | Mencari lagu yang diminta` })
-            .setDescription(`\`\`\`${track.title}\`\`\``)
-            .setThumbnail(track.thumbnail)
-            .setColor('#78ceda');
-        await interaction.editReply({ embeds: [embed] })
-        setTimeout(async () => {
-          await interaction.deleteReply();
-      }, 3000);
-      } catch (error) {
-        console.log(`Play error: ${error}`);
-        return await interaction.editReply({ content: 'aduh, aku engga bisa join voice channelnya', ephemeral: true });
-      }
-    } catch (error) {
-      console.error(error); // Handle errors
-      await interaction.editReply({ content: 'aduh, ada error pas ngejalanin command ini', ephemeral: true });
     }
-  },
-};
+}

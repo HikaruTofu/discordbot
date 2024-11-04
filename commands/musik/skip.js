@@ -1,38 +1,41 @@
-import { EmbedBuilder } from "discord.js"; 
-import { useQueue } from "discord-player";
+import { EmbedBuilder } from 'discord.js';
+import { useQueue } from 'discord-player';
+import { isInVoiceChannel } from '../../utils/voicechannel.js'; 
 
 export default {
-  name: "skip", // Set the command name
-  description: "melwati lagu yang sedang dimainkan", // Set the command description
+    name: "skip",
+    description: "melewati lagu yang sedang dimainkan", 
 
-  run: async (client, interaction) => {
-    try {
-      await interaction.deferReply(); 
+    run: async (client, interaction) => {
+        try {
+            await interaction.deferReply(); // Defer the reply to indicate processing
+            const inVoiceChannel = isInVoiceChannel(interaction);
+            if (!inVoiceChannel) {
+                return; // Early return if not in voice channel
+            }
 
-      const queue = useQueue(interaction.guild);
-      if (!queue?.isPlaying()) return interaction.editReply({ content: 'Sedang tidak ada lagu yang diputar loh', ephemeral: true });
+            const queue = useQueue(interaction.guild.id);
+            if (!queue || !queue.currentTrack) {
+                return await interaction.followUp({ content: 'Sedang tidak ada lagu yang diputar loh' });
+            }
 
-      const success = queue.node.skip();
+            const currentTrack = queue.currentTrack;
 
-      if (true) { 
-        if (!interaction.member.voice.channel) {
-          return await interaction.editReply({ content: 'aduh, kamu ada engga ada di voice channel', ephemeral: true });
+            const success = queue.node.skip(); // Attempt to skip the track
+            const embed = new EmbedBuilder()
+                .setAuthor({ name: success ? `Lagu yang sedang dimainkan berhasil dilewati` : `aduh, ada error pas ngejalanin command ini` }) // Fixed typo here
+                .setDescription(`\`\`\`${currentTrack.title}\`\`\``) // Use currentTrack.title for better display
+                .setColor('#78ceda');
+
+            await interaction.followUp({ embeds: [embed] }); // Follow up with the embed message
+            setTimeout(async () => {
+                await interaction.deleteReply(); // Delete the reply after a timeout
+            }, 3500);
+        } catch (error) {
+            console.error(error); // Log the error for debugging
+            await interaction.followUp({
+                content: 'aduh, ada error pas ngejalanin command ini: ' + error.message,
+            });
         }
-
-        // Check if the user is in the same voice channel as the bot
-        if (interaction.guild.members.me.voice.channel && interaction.member.voice.channel.id !== interaction.guild.members.me.voice.channel.id) {
-          return await interaction.editReply({ content: 'kita aja di voice channel yang berbeda', ephemeral: true });
-        }
-      }
-
-      const embed = new EmbedBuilder()
-        .setAuthor({ name: success ? `Lagu yang sekarang dimainkan sudah berhasil saya lewati!` : `aduh, ada error pas ngejalanin command ini`}) // Pass an object here
-        .setDescription(`\`\`\`${queue.currentTrack.title}\`\`\``)
-        .setColor('#78ceda');
-      await interaction.editReply({ embeds: [embed] })
-    } catch (error) {
-      console.error(error); // Handle errors
-      await interaction.editReply({ content: 'aduh, ada error pas ngejalanin command ini', ephemeral: true });
     }
-  },
-};
+}

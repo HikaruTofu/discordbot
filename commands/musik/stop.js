@@ -1,37 +1,39 @@
-import { EmbedBuilder } from "discord.js"; 
-import { useQueue } from "discord-player";
+import { EmbedBuilder } from 'discord.js';
+import { useQueue } from 'discord-player';
+import { isInVoiceChannel } from '../../utils/voicechannel.js'; 
 
 export default {
-  name: "stop", // Set the command name
-  description: "memberhentikan lagu yang sedang dimainkan", // Set the command description
+    name: "stop",
+    description: "memberhentikan lagu yang sedang dimainkan", 
 
-  run: async (client, interaction) => {
-    try {
-      await interaction.deferReply(); 
+    run: async (client, interaction) => {
+        try {
+            await interaction.deferReply(); // Defer the reply to indicate processing
+            const inVoiceChannel = isInVoiceChannel(interaction);
+            if (!inVoiceChannel) {
+                return await interaction.followUp({ content: 'Anda tidak berada di dalam saluran suara.' });
+            }
 
-        const queue = useQueue(interaction.guild);
-        if (!queue?.isPlaying()) return interaction.editReply({ content: 'Sedang tidak ada lagu yang diputar loh', ephemeral: true });
+            const queue = useQueue(interaction.guild.id);
+            if (!queue || !queue.currentTrack) {
+                return await interaction.followUp({
+                    content: 'Sedang tidak ada lagu yang diputar loh',
+                });
+            }
 
-        queue.delete();
+            queue.node.stop(); // Stop the current track
+            queue.delete(); // Clear the queue
 
-      if (true) { 
-        if (!interaction.member.voice.channel) {
-          return await interaction.editReply({ content: 'aduh, kamu ada engga ada di voice channel', ephemeral: true });
+            const embed = new EmbedBuilder()
+                .setDescription(`Lagu yang sekarang dimainkan sudah berhasil saya berhentikan!`)
+                .setColor('#78ceda');
+
+            return await interaction.followUp({ embeds: [embed] }); // Send the response
+        } catch (error) {
+            console.error(error); // Log the error for debugging
+            await interaction.followUp({
+                content: 'aduh, ada error pas ngejalanin command ini: ' + error.message,
+            });
         }
-
-        // Check if the user is in the same voice channel as the bot
-        if (interaction.guild.members.me.voice.channel && interaction.member.voice.channel.id !== interaction.guild.members.me.voice.channel.id) {
-          return await interaction.editReply({ content: 'kita aja di voice channel yang berbeda', ephemeral: true });
-        }
-      }
-
-        const embed = new EmbedBuilder()
-        .setDescription(`Lagu yang sekarang dimainkan sudah berhasil saya berhentikan!`)
-        .setColor('#78ceda');
-        await interaction.editReply({ embeds: [embed] })
-    } catch (error) {
-      console.error(error); // Handle errors
-      await interaction.editReply({ content: 'aduh, ada error pas ngejalanin command ini', ephemeral: true });
     }
-  },
-};
+}
