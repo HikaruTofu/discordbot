@@ -2,17 +2,17 @@ import { EmbedBuilder } from "discord.js";
 import { useQueue } from "discord-player";
 
 export default {
-  name: "stop", // Set the command name
-  description: "memberhentikan lagu yang sedang dimainkan", // Set the command description
+  name: "skip", // Set the command name
+  description: "melwati lagu yang sedang dimainkan", // Set the command description
 
   run: async (client, interaction) => {
     try {
       await interaction.deferReply(); 
 
-        const queue = useQueue(interaction.guild);
-        if (!queue?.isPlaying()) return interaction.editReply({ content: 'Sedang tidak ada lagu yang diputar loh', ephemeral: true });
+      const queue = useQueue(interaction.guild);
+      if (!queue?.isPlaying()) return interaction.editReply({ content: 'Sedang tidak ada lagu yang diputar loh', ephemeral: true });
 
-        queue.delete();
+      const success = queue.node.skip();
 
       if (true) { 
         if (!interaction.member.voice.channel) {
@@ -25,10 +25,11 @@ export default {
         }
       }
 
-        const embed = new EmbedBuilder()
-        .setDescription(`Lagu yang sekarang dimainkan sudah berhasil saya berhentikan!`)
+      const embed = new EmbedBuilder()
+        .setAuthor({ name: success ? `Lagu yang sekarang dimainkan sudah berhasil saya lewati!` : `aduh, ada error pas ngejalanin command ini`}) // Pass an object here
+        .setDescription(`\`\`\`${queue.currentTrack.title}\`\`\``)
         .setColor('#78ceda');
-        await interaction.editReply({ embeds: [embed] })
+      await interaction.editReply({ embeds: [embed] })
     } catch (error) {
       console.error(error); // Handle errors
       await interaction.editReply({ content: 'aduh, ada error pas ngejalanin command ini', ephemeral: true });

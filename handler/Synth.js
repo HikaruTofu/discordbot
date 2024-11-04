@@ -1,21 +1,18 @@
-// handler/Synth.js
 import { Client, Collection } from "discord.js";
 import db from 'quick.db';
 
 class SynthClient {
   constructor() {
-    this.client = Client; // Referensi ke Client
-    this.commands = new Collection(); // Menyimpan perintah
-    this.slashCommands = new Collection(); // Menyimpan perintah slash
-    this.cooldowns = new Collection(); // Menyimpan cooldown
-    this.aliases = new Collection(); // Menyimpan alias
-    this.db = db; // Database
-    this.recent = new Set(); // Data terbaru
-    this.snipes = new Map(); // Pesan yang dihapus
-    this.esnipes = new Map(); // Pesan langsung yang dihapus
+    this.client = Client; 
+    this.commands = new Collection(); 
+    this.slashCommands = new Collection(); 
+    this.cooldowns = new Collection(); 
+    this.aliases = new Collection(); 
+    this.db = db; 
+    this.recent = new Set(); 
+    this.snipes = new Map(); 
+    this.esnipes = new Map(); 
   }
-
-  // Metode lainnya sesuai kebutuhan...
 }
 
-export default SynthClient; // Mengekspor SynthClient
+export default SynthClient;

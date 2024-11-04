@@ -10,9 +10,12 @@ export default async (queue, track) => {
 
     (async () => {
         const embed = new EmbedBuilder()
-        .setAuthor({ name: `Disconnect` }) // Pass an object here
-        .setDescription(`engga ada satupun yang berada di voice channelku, aku pergi ya!`);
+            .setColor('#78ceda')
+            .setDescription(`Engga ada satupun yang berada di voice channelku, aku pergi ya!`);
 
-        queue.metadata.channel.send({ embeds: [embed] });
+        const message = await queue.metadata.channel.send({ embeds: [embed] });
+        setTimeout(async () => {
+            await message.delete();
+        }, 5000); 
     })()
 }

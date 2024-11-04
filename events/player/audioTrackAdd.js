@@ -12,9 +12,10 @@ export default async (client, queue, track) => {
 
     (async () => {
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `Lagu sudah berhasil dimasukkan ke antrian` }) // Pass an object here
+            .setAuthor({ name: `Lagu yang diminta sudah berhasil dimasukkan ke antrian` }) // Pass an object here
             .setDescription(`\`\`\`${track.title}\`\`\``)
-            .setImage(track.thumbnail);
+            .setImage(track.thumbnail)
+            .setColor('#78ceda');
 
         await queue.metadata.channel.send({ embeds: [embed] });
     })();

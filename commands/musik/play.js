@@ -58,10 +58,12 @@ export default {
         const embed = new EmbedBuilder()
             .setAuthor({ name: `Mencari dan Memasukkan lagu yang diminta ke antrian` }) // Pass an object here
             .setDescription(`\`\`\`${track.title}\`\`\``)
-            .setImage(track.thumbnail);
-        await interaction.editReply({ embeds: [embed] }).setTimeout(async () => {
+            .setThumbnail(track.thumbnail)
+            .setColor('#78ceda');
+        await interaction.editReply({ embeds: [embed] })
+        setTimeout(async () => {
           await interaction.deleteReply();
-        }, 8000);
+      }, 3000);
       } catch (error) {
         console.log(`Play error: ${error}`);
         return await interaction.editReply({ content: 'aduh, aku engga bisa join voice channelnya', ephemeral: true });

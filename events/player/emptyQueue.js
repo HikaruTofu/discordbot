@@ -3,9 +3,12 @@ import { EmbedBuilder } from "discord.js";
 export default async (queue, track) => {
     (async () => {
         const embed = new EmbedBuilder()
-        .setAuthor({ name: `Habis` }) // Pass an object here
-        .setDescription(`lagu yang ada diantrian sudah habis`);
+            .setColor('#78ceda')
+            .setDescription(`Yah, lagu yang berada diantrianku sudah habis`);
 
-        queue.metadata.channel.send({ embeds: [embed] });
-    })()
+        const message = await queue.metadata.channel.send({ embeds: [embed] });
+        setTimeout(async () => {
+            await message.delete();
+        }, 5000); 
+    })();
 }
