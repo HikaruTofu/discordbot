@@ -56,7 +56,8 @@ export default {
         });
 
         const embed = new EmbedBuilder()
-        .setDescription(`Mencari dan Memasukkan lagu yang diminta ke antrian:\`\`\`${track.title}\`\`\``)
+        .setAuthor(`Mencari dan Memasukkan lagu yang diminta ke antrian`)
+        .setDescription(`\`\`\`${track.title}\`\`\``)
         .setImage(track.thumbnail)
         await interaction.editReply({ embeds: [embed] });
       } catch (error) {
