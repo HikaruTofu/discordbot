@@ -12,6 +12,7 @@ export default {
 
       const queue = useQueue(interaction.guild.id); // Initialize the queue here
       const inVoiceChannel = isInVoiceChannel(interaction); // Check if the user is in a voice channel
+
       if (!inVoiceChannel) {
         return await interaction.followUp({ content: 'Anda tidak berada di dalam saluran suara.' });
       }
@@ -49,13 +50,18 @@ export default {
         lyricsThread: thread
       });
 
-      const syncedLyrics = queue?.syncedLyrics(lyrics);
+      // Check if syncedLyrics is available
+      if (!queue.syncedLyrics) {
+        return await interaction.followUp({ content: 'Fitur synced lyrics tidak tersedia untuk lagu ini.', ephemeral: true });
+      }
+
+      const syncedLyrics = queue.syncedLyrics(lyrics);
       syncedLyrics.onChange(async (newLyrics) => {
         await thread.send({
           content: newLyrics
         });
       });
-      syncedLyrics?.subscribe();
+      syncedLyrics.subscribe();
 
       return await interaction.followUp({ content: `Lirik telah berhasil di sinkronkan di <${thread}>!` });
     } catch (error) {
