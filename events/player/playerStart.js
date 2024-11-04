@@ -10,9 +10,10 @@ export default async (queue, track) => {
 
     try {
         const embed = new EmbedBuilder()
-        .setAuthor(`Memulai lagu di ${queue.channel.name}`)
-        .setDescription(`\`\`\`${track.title}\`\`\``)
-        .setImage(track.thumbnail)
+            .setAuthor({ name: `Memulai lagu di ${queue.channel.name}` }) // Pass an object here
+            .setDescription(`\`\`\`${track.title}\`\`\``)
+            .setImage(track.thumbnail);
+        
         console.log(`Track started: ${track.title} in channel: ${queue.channel.name}`);
         await queue.metadata.channel.send({ embeds: [embed] });
     } catch (error) {

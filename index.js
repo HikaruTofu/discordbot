@@ -70,7 +70,12 @@ client.config = {
     }
 }; // No parentheses, since config is not a function
 
-const player = new Player(client, client.config.opt.discordPlayer);
+const player = new Player(client, {
+    ytdlOptions: {
+        quality: 'highestaudio',
+        highWaterMark: 1 << 25,
+    }
+});
 player.extractors.register(YoutubeiExtractor, {});
 
 // Loading environment variables and logging in to Discord

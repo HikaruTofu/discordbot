@@ -10,9 +10,9 @@ export default async (queue, track) => {
 
     (async () => {
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `Disconnect` }) // Pass an object here
-            .setDescription(`aku terputus dari voice channel, antrian kuhapus ya!`);
+        .setAuthor({ name: `Disconnect` }) // Pass an object here
+        .setDescription(`engga ada satupun yang berada di voice channelku, aku pergi ya!`);
 
-        await queue.metadata.channel.send({ embeds: [embed] });
-    })();
+        queue.metadata.channel.send({ embeds: [embed] });
+    })()
 }
