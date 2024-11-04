@@ -1,5 +1,5 @@
 // config/config.js
-export default (client) => ({
+const playerconfig = {
     app: {
         extraMessages: false,
         loopMessage: false,
@@ -35,4 +35,6 @@ export default (client) => ({
             }
         }
     }
-});
+}
+
+export default playerconfig;

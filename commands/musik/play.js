@@ -16,36 +16,28 @@ export default {
   run: async (client, interaction) => {
     const player = useMainPlayer();
     const song = interaction.options.getString('song');
-    let defaultEmbed = new EmbedBuilder().setColor('#2f3136');
-    let errorEmbed = new EmbedBuilder().setColor('#ff0000'); // Error embed
 
     try {
-      await interaction.deferReply(); // Defer the reply
+      await interaction.deferReply(); 
 
-      // Check if the command requires the user to be in a voice channel
-      if (true) { // Replace `true` with your condition to check if the command requires voice channel
-        // Check if the user is in a voice channel
+      if (true) { 
         if (!interaction.member.voice.channel) {
-          errorEmbed.setDescription(`<❌> | You are not in a Voice Channel`);
-          return interaction.editReply({ embeds: [errorEmbed], ephemeral: true });
+          return await interaction.editReply({ content: 'aduh, kamu ada engga ada di voice channel', ephemeral: true });
         }
 
         // Check if the user is in the same voice channel as the bot
         if (interaction.guild.members.me.voice.channel && interaction.member.voice.channel.id !== interaction.guild.members.me.voice.channel.id) {
-          errorEmbed.setDescription(`<❌> | You are not in the same Voice Channel`);
-          return interaction.editReply({ embeds: [errorEmbed], ephemeral: true });
+          return await interaction.editReply({ content: 'kita aja di voice channel yang berbeda', ephemeral: true });
         }
       }
 
-      // Search for the song
       const res = await player.search(song, {
         requestedBy: interaction.member,
         searchEngine: QueryType.AUTO
       });
 
       if (!res?.tracks.length) {
-        defaultEmbed.setAuthor({ name: `No results found... try again ? <❌>` });
-        return interaction.editReply({ embeds: [defaultEmbed] });
+        return await interaction.editReply({ content: 'maaf, tapi aku engga nemu lagu yang diminta', ephemeral: true });
       }
 
       // Attempt to play the song
@@ -63,16 +55,17 @@ export default {
           }
         });
 
-        defaultEmbed.setAuthor({ name: `Loading <${track.title}> to the queue... <✅>` });
-        await interaction.editReply({ embeds: [defaultEmbed] });
+        const embed = new EmbedBuilder()
+        .setDescription(`Mencari dan Memasukkan lagu yang diminta ke antrian:\`\`\`${track.title}\`\`\``)
+        .setImage(track.thumbnail)
+        await interaction.editReply({ embeds: [embed] });
       } catch (error) {
         console.log(`Play error: ${error}`);
-        defaultEmbed.setAuthor({ name: `I can't join the voice channel... try again ? <❌>` });
-        return interaction.editReply({ embeds: [defaultEmbed] });
+        return await interaction.editReply({ content: 'aduh, aku engga bisa join voice channelnya', ephemeral: true });
       }
     } catch (error) {
       console.error(error); // Handle errors
-      await interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
+      await interaction.editReply({ content: 'aduh, ada error pas ngejalanin command ini', ephemeral: true });
     }
   },
 };
