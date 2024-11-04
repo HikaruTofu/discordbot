@@ -56,7 +56,7 @@ export default {
         });
 
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `Mencari dan Memasukkan lagu yang diminta ke antrian` }) // Pass an object here
+            .setAuthor({ name: `⏱ | Mencari lagu yang diminta` })
             .setDescription(`\`\`\`${track.title}\`\`\``)
             .setThumbnail(track.thumbnail)
             .setColor('#78ceda');

@@ -23,25 +23,7 @@ const client = new Client({
     ],
 });
 
-const synthClient = new SynthClient(client);
-setupEvents(client);
-setupModule(client);
-
 client.config = {
-    app: {
-        extraMessages: false,
-        loopMessage: false,
-        enableEmojis: false,
-    },
-    emojis: {
-        'back': '⏪',
-        'skip': '⏩',
-        'ResumePause': '⏯️',
-        'savetrack': '💾',
-        'volumeUp': '🔊',
-        'volumeDown': '🔉',
-        'loop': '🔁',
-    },
     opt: {
         DJ: {
             enabled: false,
@@ -65,12 +47,17 @@ client.config = {
     }
 };
 
+const synthClient = new SynthClient(client);
+setupEvents(client);
+setupModule(client);
+
 const player = new Player(client, {
     ytdlOptions: {
         quality: 'highestaudio',
         highWaterMark: 1 << 25,
     }
 });
+player.extractors.loadDefault().then(r => console.log('Extractors loaded successfully'));
 player.extractors.register(YoutubeiExtractor, {});
 
 dotenv.config();

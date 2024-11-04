@@ -9,11 +9,7 @@ export default async (queue, track) => {
     }
 
     (async () => {
-        const embed = new EmbedBuilder()
-            .setColor('#78ceda')
-            .setDescription(`Aku terputus dari voice channel tempatku, antrian kuhapus ya!`);
-
-        const message = await queue.metadata.channel.send({ embeds: [embed] });
+        const message = await queue.metadata.channel.send({ content: `Aku terputus dari voice channel tempatku, antrian kuhapus ya!`, ephemeral: true });
         setTimeout(async () => {
             await message.delete();
         }, 6000); 
