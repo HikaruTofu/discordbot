@@ -60,7 +60,7 @@ export default {
 
             const embed = new EmbedBuilder()
             .setColor('#2f3136')
-            .setAuthor({ name: `⏱ | Hasil pencarian untuk lagu yang diminta:`})
+            .setTitle('`⏱` | Hasil pencarian untuk lagu yang diminta:')
             .setDescription(`\`\`\`${maxTracks.map((track, i) => `${i + 1}. ${track.title} | ${track.author}`).join('\n')}\`\`\``)
             .setFooter({ text: `pilih lagu antara 1 - ${maxTracks.length} atau cancel` });
         interaction.followUp({ embeds: [embed] });

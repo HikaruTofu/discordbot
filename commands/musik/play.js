@@ -33,6 +33,7 @@ export default {
             const player = useMainPlayer();
             const query = interaction.options.getString('query');
             const searchResult = await player.search(query, {
+                requestedBy: interaction.member,
                 searchEngine: QueryType.AUTO,
             });
 
@@ -59,10 +60,10 @@ export default {
                 });
 
                 const embed = new EmbedBuilder()
-                    .setAuthor({ name: `⏱ | Mencari lagu yang diminta` })
+                    .setTitle('`⏱` | Mencari lagu yang diminta:')
                     .setDescription(`\`\`\`${track.title}\`\`\``)
                     .setColor('#78ceda')
-                    .setTimestamp()
+                    .setTimestamp();
                 
                 await interaction.followUp({ embeds: [embed] }); 
                 setTimeout(async () => {

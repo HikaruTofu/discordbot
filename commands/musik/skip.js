@@ -37,6 +37,7 @@ export default {
             const embed = new EmbedBuilder()
                 .setAuthor({ name: success ? `Lagu yang sedang dimainkan berhasil dilewati` : `aduh, ada error pas ngejalanin command ini` }) 
                 .setDescription(`\`\`\`${currentTrack.title}\`\`\``)
+                .setTimestamp()
                 .setColor('#78ceda');
 
             await interaction.followUp({ embeds: [embed] }); 

@@ -37,7 +37,8 @@ export default {
             queue.delete(); 
 
             const embed = new EmbedBuilder()
-            .setDescription(`Lagu yang sekarang dimainkan sudah berhasil saya berhentikan!`)
+            .setDescription(`Lagu yang sekarang dimainkan sudah berhasil berhentikan!`)
+            .setTimestamp()
             .setColor('#78ceda');
             return await interaction.followUp({ embeds: [embed] }); 
         } catch (error) {

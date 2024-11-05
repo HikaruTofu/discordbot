@@ -32,7 +32,7 @@ export default {
               return;
             }
         }     
-        
+
         const vol = interaction.options.getInteger('volume'); 
 
         const queue = useQueue(interaction.guild.id); 
@@ -56,6 +56,7 @@ export default {
         const embed = new EmbedBuilder()
             .setAuthor({ name: success ? `🔊 | Volume telah berhasil diubah ke yang baru ya!` : `aduh, ada error pas ngejalanin command ini` })
             .setDescription(`\`\`\`${vol}/${maxVol}\`\`\``)
+            .setTimestamp()
             .setColor('#78ceda');
         await interaction.followUp({ embeds: [embed] });     
     }

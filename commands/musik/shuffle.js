@@ -48,7 +48,8 @@ export default {
                 
                 const embed = new EmbedBuilder()
                     .setDescription(`Berhasil meng-acak total ${queue.tracks.size} lagu yang sedang diantrian!`)
-                    .setColor('#78ceda');
+                    .setColor('#78ceda')
+                    .setTimestamp();
                 return void interaction.followUp({ embeds: [embed] }); 
             } catch (error) {
                 console.error(error); 

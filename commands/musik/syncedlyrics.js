@@ -86,6 +86,7 @@ export default {
 
       const embed = new EmbedBuilder()
         .setDescription(`Lirik telah berhasil saya sinkronkan di ${thread}!`)
+        .setTimestamp()
         .setColor('#78ceda');
       return await interaction.followUp({ embeds: [embed] }); 
     } catch (error) {
