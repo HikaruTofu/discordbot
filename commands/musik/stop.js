@@ -1,6 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
 import { useQueue } from 'discord-player';
-import { isInVoiceChannel } from '../../utils/voicechannel.js'; 
 
 export default {
     name: "stop",
@@ -8,29 +7,41 @@ export default {
 
     run: async (client, interaction) => {
         try {
-            await interaction.deferReply(); // Defer the reply to indicate processing
-            const inVoiceChannel = isInVoiceChannel(interaction);
-            if (!inVoiceChannel) {
-                return await interaction.followUp({ content: 'Anda tidak berada di dalam saluran suara.' });
-            }
+            await interaction.deferReply(); 
+            if (true) { 
+                if (!interaction.member.voice.channel) {
+                  await interaction.editReply({ content: 'aduh, kamu ada engga ada di voice channel', ephemeral: true })
+                  setTimeout(async () => {
+                    await interaction.deleteReply();
+                }, 4000);
+                return;
+                }
+                if (interaction.guild.members.me.voice.channel && interaction.member.voice.channel.id !== interaction.guild.members.me.voice.channel.id) {
+                  await interaction.editReply({ content: 'kita aja di voice channel yang berbeda', ephemeral: true });
+                  return;
+                }
+            }     
 
             const queue = useQueue(interaction.guild.id);
             if (!queue || !queue.currentTrack) {
-                return await interaction.followUp({
-                    content: 'Sedang tidak ada lagu yang diputar loh',
+                await interaction.followUp({
+                    content: 'sedang tidak ada lagu yang diputar loh?',
                 });
+                setTimeout(async () => {
+                    await interaction.deleteReply(); 
+                }, 4500);
+                return;
             }
 
-            queue.node.stop(); // Stop the current track
-            queue.delete(); // Clear the queue
+            queue.node.stop(); 
+            queue.delete(); 
 
             const embed = new EmbedBuilder()
-                .setDescription(`Lagu yang sekarang dimainkan sudah berhasil saya berhentikan!`)
-                .setColor('#78ceda');
-
-            return await interaction.followUp({ embeds: [embed] }); // Send the response
+            .setDescription(`Lagu yang sekarang dimainkan sudah berhasil saya berhentikan!`)
+            .setColor('#78ceda');
+            return await interaction.followUp({ embeds: [embed] }); 
         } catch (error) {
-            console.error(error); // Log the error for debugging
+            console.error(error); 
             await interaction.followUp({
                 content: 'aduh, ada error pas ngejalanin command ini: ' + error.message,
             });

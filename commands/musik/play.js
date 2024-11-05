@@ -1,6 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { useMainPlayer, QueryType } from 'discord-player'; // Ensure QueryType is imported
-import { isInVoiceChannel } from '../../utils/voicechannel.js'; 
+import { useMainPlayer, QueryType } from 'discord-player'; 
 
 export default {
     name: "play",
@@ -9,18 +8,27 @@ export default {
         {
             name: "query",
             type: 3, 
-            description: "mau cari lagu apa?",
+            description: "mau minta lagu apa?",
             required: true,
         },
     ],
 
     run: async (client, interaction) => {
         try {
-            await interaction.deferReply(); // Defer the reply to indicate processing
-            const inVoiceChannel = isInVoiceChannel(interaction);
-            if (!inVoiceChannel) {
-                return; // Early return if not in voice channel
-            }
+            await interaction.deferReply(); 
+            if (true) { 
+                if (!interaction.member.voice.channel) {
+                  await interaction.editReply({ content: 'aduh, kamu ada engga ada di voice channel', ephemeral: true })
+                  setTimeout(async () => {
+                    await interaction.deleteReply();
+                }, 4000);
+                return;
+                }
+                if (interaction.guild.members.me.voice.channel && interaction.member.voice.channel.id !== interaction.guild.members.me.voice.channel.id) {
+                  await interaction.editReply({ content: 'kita aja di voice channel yang berbeda', ephemeral: true });
+                  return;
+                }
+            }        
 
             const player = useMainPlayer();
             const query = interaction.options.getString('query');
@@ -28,9 +36,13 @@ export default {
                 searchEngine: QueryType.AUTO,
             });
 
-            if (!searchResult.hasTracks()) {
-                return await interaction.followUp({ content: 'maaf, tapi aku tidak menemukan lagu yang diminta' });
-            }
+            if (!searchResult.hasTracks()) { 
+                await interaction.  followUp({ content: 'maaf, tapi aku tidak menemukan lagu yang diminta' })
+                setTimeout(async () => {
+                    await interaction.deleteReply();
+                }, 4500);
+                return;
+            }   
 
             try {
                 const { track } = await player.play(interaction.member.voice.channel, searchResult.tracks[0], { 
@@ -49,21 +61,23 @@ export default {
                 const embed = new EmbedBuilder()
                     .setAuthor({ name: `⏱ | Mencari lagu yang diminta` })
                     .setDescription(`\`\`\`${track.title}\`\`\``)
-                    .setColor('#78ceda');
+                    .setColor('#78ceda')
+                    .setTimestamp()
                 
-                await interaction.followUp({ embeds: [embed] }); // Follow up with the embed message
+                await interaction.followUp({ embeds: [embed] }); 
                 setTimeout(async () => {
-                    await interaction.deleteReply(); // Delete the reply after a timeout
-                }, 3500);
+                    await interaction.deleteReply(); 
+                }, 5000);
             } catch (error) {
-                // Handle errors during playback
-                console.error(error); // Log the error for debugging
-                await interaction.followUp({
-                    content: 'An error has occurred while trying to play the track.',
-                });
+                console.error(error); {
+                    await interaction.followUp({ content: 'An error has occurred while trying to play the track.',});
+                    setTimeout(async () => {
+                        await interaction.deleteReply();
+                    }, 4000);
+                }
             }
         } catch (error) {
-            console.error(error); // Log the error for debugging
+            console.error(error); 
             await interaction.followUp({
                 content: 'aduh, ada error pas ngejalanin command ini: ' + error.message,
             });

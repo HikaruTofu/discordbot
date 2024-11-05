@@ -1,48 +1,65 @@
 import { EmbedBuilder } from "discord.js"; 
 import { useQueue, useMainPlayer } from "discord-player";
-import { isInVoiceChannel } from '../../utils/voicechannel.js'; 
 
 export default {
-  name: "syncedlyrics", // Set the command name
-  description: "membuat lirik sinkron dengan lagu yang sedang dimainkan", // Set the command description
+    name: "syncedlyrics", 
+    description: "Membuat lirik sinkron dengan lagu yang sedang dimainkan", 
 
-  run: async (client, interaction) => {
-    try {
-      await interaction.deferReply(); 
-
-      const queue = useQueue(interaction.guild.id); // Initialize the queue here
-      const inVoiceChannel = isInVoiceChannel(interaction); // Check if the user is in a voice channel
-
-      if (!inVoiceChannel) {
-        return await interaction.followUp({ content: 'Anda tidak berada di dalam saluran suara.' });
-      }
-
-      if (!queue?.isPlaying()) {
-        return await interaction.followUp({ content: 'Sedang tidak ada lagu yang diputar loh', ephemeral: true });
-      }
+    run: async (client, interaction) => {
+      try {
+        await interaction.deferReply(); 
+          if (true) { 
+            if (!interaction.member.voice.channel) {
+              await interaction.editReply({ content: 'aduh, kamu ada engga ada di voice channel', ephemeral: true })
+              setTimeout(async () => {
+                await interaction.deleteReply();
+              }, 4000);
+            return;
+          }
+          if (interaction.guild.members.me.voice.channel && interaction.member.voice.channel.id !== interaction.guild.members.me.voice.channel.id) {
+              await interaction.editReply({ content: 'kita aja di voice channel yang berbeda', ephemeral: true });
+            return;
+          }
+      }     
 
       const metadataThread = queue.metadata.lyricsThread;
       if (metadataThread && !metadataThread.archived) {
-        return await interaction.followUp({ content: `Lirik thread sudah kebuat loh di <${queue.metadata.lyricsThread}>` });
+        await interaction.followUp({ 
+          content: `Lirik thread sudah dibuat di ${metadataThread}, ngapain mau buat lagi?` 
+        });
+        setTimeout(async () => {
+          await interaction.deleteReply(); 
+        }, 5500);
+        return;
       }
 
       const player = useMainPlayer();
       const results = await player.lyrics
-        .search({
-            q: queue.currentTrack.title
-        })
+        .search({ q: queue.currentTrack.title })
         .catch(async (e) => {
-            console.log(e);
-            return await interaction.followUp({ content: `Mohon maaf, tetapi ada kerusakan saat menjalakannya.` });
+          console.log(e);
+          await interaction.followUp({ 
+            content: `Mohon maaf, tetapi ada kesalahan saat menjalankannya.` 
+          });
+          setTimeout(async () => {
+            await interaction.deleteReply(); 
+          }, 4500);
+          return;
         });
 
       const lyrics = results?.[0];
       if (!lyrics?.plainLyrics) {
-        return await interaction.followUp({ content: `Yah, saya gagal untuk mencari liriknya...mau coba lagi?` });
+        await interaction.followUp({ 
+          content: `Yah, saya gagal untuk mencari liriknya... mau coba lagi?` 
+        });
+        setTimeout(async () => {
+          await interaction.deleteReply(); 
+        }, 4500);
+        return;
       }
 
       const thread = await queue.metadata.channel.threads.create({
-        name: `Lyrics of ${queue.currentTrack.title}`
+        name: `Lirik dari ${queue.currentTrack.title}`
       });
 
       queue.setMetadata({
@@ -50,23 +67,33 @@ export default {
         lyricsThread: thread
       });
 
-      // Check if syncedLyrics is available
       if (!queue.syncedLyrics) {
-        return await interaction.followUp({ content: 'Fitur synced lyrics tidak tersedia untuk lagu ini.', ephemeral: true });
+        await interaction.followUp({ 
+          content: 'Yah, fitur synced lyrics lagi tidak tersedia untuk lagu ini', 
+          ephemeral: true 
+        });
+        setTimeout(async () => {
+          await interaction.deleteReply(); 
+        }, 4500);
+        return;
       }
 
       const syncedLyrics = queue.syncedLyrics(lyrics);
       syncedLyrics.onChange(async (newLyrics) => {
-        await thread.send({
-          content: newLyrics
-        });
+        await thread.send({ content: newLyrics });
       });
       syncedLyrics.subscribe();
 
-      return await interaction.followUp({ content: `Lirik telah berhasil di sinkronkan di <${thread}>!` });
+      const embed = new EmbedBuilder()
+        .setDescription(`Lirik telah berhasil saya sinkronkan di ${thread}!`)
+        .setColor('#78ceda');
+      return await interaction.followUp({ embeds: [embed] }); 
     } catch (error) {
-      console.error(error); // Handle errors
-      await interaction.followUp({ content: 'Aduh, ada error pas ngejalanin command ini', ephemeral: true });
+      console.error(error);
+      await interaction.followUp({ 
+        content: 'Aduh, ada error pas menjalankan command ini', 
+        ephemeral: true 
+      });
     }
   },
 };

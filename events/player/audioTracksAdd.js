@@ -5,6 +5,12 @@ export default async (client, queue, track) => {
         const embed = new EmbedBuilder()
         .setColor('#78ceda')
         .setDescription(`Semua lagu dari playlist yang kamu kasih sudah kumasukkan di antrian ya!`);
-        queue.metadata.channel.send({ embeds: [embed] });
-    })()
+        
+        // Ensure queue.metadata is defined before accessing channel
+        if (queue.metadata && queue.metadata.channel) {
+            queue.metadata.channel.send({ embeds: [embed] });
+        } else {
+            console.error("Queue metadata or channel is undefined.");
+        }
+    })();
 }

@@ -2,8 +2,8 @@ import { EmbedBuilder } from 'discord.js';
 import { useQueue } from 'discord-player';
 
 export default {
-    name: "skip",
-    description: "melewati lagu yang sedang dimainkan", 
+    name: "shuffle",
+    description: "mengacak lagu yang berada di antrian", 
 
     run: async (client, interaction) => {
         try {
@@ -24,27 +24,40 @@ export default {
 
             const queue = useQueue(interaction.guild.id);
             if (!queue || !queue.currentTrack) {
-                await interaction.followUp({ content: 'sedang tidak ada lagu yang diputar loh?' });
+                await interaction.followUp({
+                    content: 'sedang tidak ada lagu yang diputar loh?',
+                });
                 setTimeout(async () => {
                     await interaction.deleteReply(); 
                 }, 4500);
                 return;
             }
 
-            const currentTrack = queue.currentTrack;
-
-            const success = queue.node.skip(); 
-            const embed = new EmbedBuilder()
-                .setAuthor({ name: success ? `Lagu yang sedang dimainkan berhasil dilewati` : `aduh, ada error pas ngejalanin command ini` }) 
-                .setDescription(`\`\`\`${currentTrack.title}\`\`\``)
-                .setColor('#78ceda');
-
-            await interaction.followUp({ embeds: [embed] }); 
-            setTimeout(async () => {
-                await interaction.deleteReply(); 
-            }, 4500);
+            if (!queue.tracks.toArray()[0]) {
+                interaction.followUp({
+                    content: 'tidak ada sama sekali lagu selanjutnya di antrian loh?',
+                });
+                setTimeout(async () => {
+                    await interaction.deleteReply(); 
+                }, 4500);
+                return;
+            }
+            
+            try {
+                queue.tracks.shuffle();
+                
+                const embed = new EmbedBuilder()
+                    .setDescription(`Berhasil meng-acak total ${queue.tracks.size} lagu yang sedang diantrian!`)
+                    .setColor('#78ceda');
+                return void interaction.followUp({ embeds: [embed] }); 
+            } catch (error) {
+                console.error(error); 
+                await interaction.followUp({
+                    content: 'aduh, ada error pas ngejalanin command ini: ' + error.message,
+                });
+            }
         } catch (error) {
-            console.error(error); 
+            console.error(error);
             await interaction.followUp({
                 content: 'aduh, ada error pas ngejalanin command ini: ' + error.message,
             });
