@@ -21,7 +21,7 @@ export default {
         await interaction.deferReply(); 
         if (true) { 
             if (!interaction.member.voice.channel) {
-              await interaction.editReply({ content: 'aduh, kamu ada engga ada di voice channel', ephemeral: true })
+              await interaction.editReply({ content: 'aduh, kamu aja tidak berada di voice channel manapun', ephemeral: true });
               setTimeout(async () => {
                 await interaction.deleteReply();
             }, 4000);

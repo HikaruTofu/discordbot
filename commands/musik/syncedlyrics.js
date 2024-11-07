@@ -10,7 +10,7 @@ export default {
         await interaction.deferReply(); 
           if (true) { 
             if (!interaction.member.voice.channel) {
-              await interaction.editReply({ content: 'aduh, kamu ada engga ada di voice channel', ephemeral: true })
+              await interaction.editReply({ content: 'aduh, kamu aja tidak berada di voice channel manapun', ephemeral: true });
               setTimeout(async () => {
                 await interaction.deleteReply();
               }, 4000);
@@ -24,7 +24,7 @@ export default {
 
       const metadataThread = queue.metadata.lyricsThread;
       if (metadataThread && !metadataThread.archived) {
-        await interaction.followUp({ 
+        await interaction.editReply({ 
           content: `Lirik thread sudah dibuat di ${metadataThread}, ngapain mau buat lagi?` 
         });
         setTimeout(async () => {
@@ -38,7 +38,7 @@ export default {
         .search({ q: queue.currentTrack.title })
         .catch(async (e) => {
           console.log(e);
-          await interaction.followUp({ 
+          await interaction.editReply({ 
             content: `Mohon maaf, tetapi ada kesalahan saat menjalankannya.` 
           });
           setTimeout(async () => {
@@ -49,7 +49,7 @@ export default {
 
       const lyrics = results?.[0];
       if (!lyrics?.plainLyrics) {
-        await interaction.followUp({ 
+        await interaction.editReply({ 
           content: `Yah, saya gagal untuk mencari liriknya... mau coba lagi?` 
         });
         setTimeout(async () => {

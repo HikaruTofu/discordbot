@@ -8,26 +8,18 @@ export default {
     run: async (client, interaction) => {
         try {
             await interaction.deferReply(); 
-            if (true) { 
-                if (!interaction.member.voice.channel) {
-                  await interaction.editReply({ content: 'aduh, kamu ada engga ada di voice channel', ephemeral: true })
-                  setTimeout(async () => {
-                    await interaction.deleteReply();
-                }, 4000);
+            if (!interaction.member.voice.channel) {
+                await interaction.editReply({ content: 'aduh, kamu aja tidak berada di voice channel manapun', ephemeral: true });
                 return;
-                }
-                if (interaction.guild.members.me.voice.channel && interaction.member.voice.channel.id !== interaction.guild.members.me.voice.channel.id) {
-                  await interaction.editReply({ content: 'kita aja di voice channel yang berbeda', ephemeral: true });
-                  return;
-                }
-            }     
+            }
+            if (interaction.guild.members.me.voice.channel && interaction.member.voice.channel.id !== interaction.guild.members.me.voice.channel.id) {
+                await interaction.editReply({ content: 'kita aja di voice channel yang berbeda', ephemeral: true });
+                return;
+            }
 
             const queue = useQueue(interaction.guild.id);
             if (!queue || !queue.currentTrack) {
-                await interaction.followUp({ content: 'sedang tidak ada lagu yang diputar loh?' });
-                setTimeout(async () => {
-                    await interaction.deleteReply(); 
-                }, 4500);
+                await interaction.editReply({ content: 'sedang tidak ada lagu yang diputar loh?' });
                 return;
             }
 
@@ -40,13 +32,19 @@ export default {
                 .setTimestamp()
                 .setColor('#78ceda');
 
-            await interaction.followUp({ embeds: [embed] }); 
+            const reply = await interaction.followUp({ embeds: [embed] }); 
+
+            // Use a timeout to delete the reply after a certain period
             setTimeout(async () => {
-                await interaction.deleteReply(); 
+                try {
+                    await reply.delete(); // Delete the reply message
+                } catch (err) {
+                    console.error('Failed to delete message:', err);
+                }
             }, 4500);
         } catch (error) {
             console.error(error); 
-            await interaction.followUp({
+            await interaction.editReply({
                 content: 'aduh, ada error pas ngejalanin command ini: ' + error.message,
             });
         }

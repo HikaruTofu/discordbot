@@ -10,7 +10,7 @@ export default {
             await interaction.deferReply(); 
             if (true) { 
                 if (!interaction.member.voice.channel) {
-                  await interaction.editReply({ content: 'aduh, kamu ada engga ada di voice channel', ephemeral: true })
+                  await interaction.editReply({ content: 'aduh, kamu aja tidak berada di voice channel manapun', ephemeral: true });
                   setTimeout(async () => {
                     await interaction.deleteReply();
                 }, 4000);
@@ -24,7 +24,7 @@ export default {
 
             const queue = useQueue(interaction.guild.id);
             if (!queue || !queue.currentTrack) {
-                await interaction.followUp({
+                await interaction.editReply({
                     content: 'sedang tidak ada lagu yang diputar loh?',
                 });
                 setTimeout(async () => {
@@ -43,7 +43,7 @@ export default {
             return await interaction.followUp({ embeds: [embed] }); 
         } catch (error) {
             console.error(error); 
-            await interaction.followUp({
+            await interaction.editReply({
                 content: 'aduh, ada error pas ngejalanin command ini: ' + error.message,
             });
         }

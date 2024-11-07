@@ -10,7 +10,7 @@ export default {
             await interaction.deferReply(); 
             if (true) { 
                 if (!interaction.member.voice.channel) {
-                    await interaction.editReply({ content: 'aduh, kamu ada engga ada di voice channel', ephemeral: true });
+                    await interaction.editReply({ content: 'aduh, kamu aja tidak berada di voice channel manapun', ephemeral: true });
                     setTimeout(async () => {
                         await interaction.deleteReply();
                     }, 4000);
@@ -24,7 +24,7 @@ export default {
 
             const queue = useQueue(interaction.guild.id);
             if (!queue || !queue.currentTrack) {
-                await interaction.followUp({
+                await interaction.editReply({
                     content: 'sedang tidak ada lagu yang diputar loh?',
                 });
                 setTimeout(async () => {
@@ -34,7 +34,7 @@ export default {
             }
             const tracksArray = queue.tracks.toArray(); 
             if (tracksArray.length === 0) {
-                await interaction.followUp({
+                await interaction.editReply({
                     content: 'tidak ada sama sekali lagu selanjutnya di antrian loh?',
                 });
                 setTimeout(async () => {
@@ -49,14 +49,14 @@ export default {
 
             const embed = new EmbedBuilder()
                 .setColor('#2f3136')
-                .setTitle('`🎶` | Antrian lagu selanjutnya')
+                .setTitle('`🎶` | Antrian lagu selanjutnya:')
                 .setDescription(`\`\`\`${maxTracks.map((track, i) => `${i + 1}. ${track.title} - ${track.author}`).join('\n')}\`\`\``)
                 .setFooter({ text: nextSongs });
 
-            await interaction.followUp({ embeds: [embed] }); // Make sure to await this
+            await interaction.editReply({ embeds: [embed] }); // Make sure to await this
         } catch (error) {
             console.error(error); 
-            await interaction.followUp({
+            await interaction.editReply({
                 content: 'aduh, ada error pas ngejalanin command ini: ' + error.message,
             });
         }
