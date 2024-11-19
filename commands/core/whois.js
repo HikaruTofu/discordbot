@@ -7,7 +7,7 @@ export default {
   options: [
     {
         name: "option",
-        type: 6, // USER type
+        type: 6, 
         description: "Pilih Seseorang",
         required: true,
     },
@@ -17,7 +17,7 @@ export default {
     try {
       await interaction.deferReply();
 
-      let user = interaction.options.getMember('option') || interaction.member; // Corrected here
+      let user = interaction.options.getMember('option') || interaction.member; 
       const roles = user.roles.cache.map(role => role.toString()).join("\n");
       const roleslist = roles.replace("@everyone, ", "");
       
@@ -37,17 +37,14 @@ export default {
         EARLY_VERIFIED_DEVELOPER: 'Early Verified Developer',
         ACTIVE_DEVELOPER: 'Active Developer'
       };
-      // Retrieve user flags
       
       const userFlagsArray = user.user.flags.toArray();
-      console.log(userFlagsArray); // Debugging line to check flags    
+      console.log(userFlagsArray); 
 
       const userFlags = userFlagsArray.length ? userFlagsArray.map(flag => flags[flag] || flag).join('\n') : 'No badges';
 
-      // Check user presence status
-      let status = 'Offline'; // Default to Offline
+      let status = 'Offline'; 
       if (user.presence) {
-        // Use optional chaining to access the presence status
         switch (user.presence.status) {
           case "online":
               status = 'Online';
@@ -67,11 +64,9 @@ export default {
         }
       }
 
-      // Set default values if roles or flags are empty
       const rolesDisplay = roleslist || 'No roles';
       const flagsDisplay = userFlags || 'No flags';
 
-      // Membuat embed menggunakan EmbedBuilder
       const embed = new EmbedBuilder()
       .setTitle(`Informasi seorang ${user.user.tag}`)
       .setThumbnail(user.displayAvatarURL())
@@ -93,7 +88,7 @@ export default {
 
       await interaction.editReply({ embeds: [embed] });
     } catch (error) {
-        console.error(error); // Menangani kesalahan
+        console.error(error); 
         await interaction.editReply({ content: 'aduh, ada error pas ngejalanin command ini', ephemeral: true });
     }
   },

@@ -3,15 +3,14 @@ import superagent from "superagent";
 import nekoslife from "nekos.life";
 const neko = new nekoslife(); 
 
-const choices = ["waifu", "neko", "foxgirl", "avatar", "wallpaper"]; // Ensure all are lowercase
-
+const choices = ["waifu", "neko", "foxgirl", "avatar", "wallpaper"]; 
 export default {
   name: "waifu",
   description: "Gacha waifu",
   options: [
     {
       name: "pilih",  
-      type: 3, // STRING type
+      type: 3, 
       description: "Pilih mau yang mana",
       required: true,
       choices: choices.map((ch) => ({ name: ch, value: ch })),
@@ -42,14 +41,13 @@ export default {
             throw new Error("Invalid category");
           }
 
-          // Return the embed with the image
           return new EmbedBuilder()
             .setImage(imageUrl)
             .setColor('#78ceda')
             .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: `${interaction.user.displayAvatarURL()}` })
             .setTimestamp();
         } catch (ex) {
-          console.error("Error fetching image:", ex); // Log the error
+          console.error("Error fetching image:", ex); 
           return new EmbedBuilder()
             .setDescription("gagal mengambil foto, maaf ya")
             .setColor('#78ceda')
@@ -61,7 +59,7 @@ export default {
       const embed = await genReaction(choice);
       await interaction.followUp({ embeds: [embed] });
     } catch (error) {
-      console.error(error); // Log the error for debugging
+      console.error(error);
       await interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
     }
   },

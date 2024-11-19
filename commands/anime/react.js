@@ -11,13 +11,13 @@ export default {
   options: [
     {
         name: "pilih_orang",  
-        type: 6, // USER type
+        type: 6, 
         description: "pilih orang yang di inginkan",
         required: true,
     },
     {
         name: "pilih_reaksi",  
-        type: 3, // STRING type
+        type: 3, 
         description: "pilih reaksi yang di inginkan",
         required: true,
         choices: choices.map((ch) => ({ name: ch, value: ch })),
@@ -35,7 +35,6 @@ export default {
         try {
           let imageUrl;
 
-          // Check for the category and fetch the image
           if (category === "wink") {
             const response = await superagent.get("https://some-random-api.com/animu/wink");
             if (!response.body || !response.body.url) {
@@ -43,11 +42,9 @@ export default {
             }
             const imageUrl = response.body.url;
           } else {
-            // Fetch from nekos.life
             imageUrl = (await neko[category]()).url;
           }
 
-          // Return the embed with the image
           return new EmbedBuilder()
             .setTitle(`${interaction.user.username} ${category} ${selectedUser .username}`)
             .setImage(imageUrl)
@@ -55,7 +52,7 @@ export default {
             .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: `${interaction.user.displayAvatarURL()}` })
             .setTimestamp();
         } catch (ex) {
-          console.error("Error fetching image:", ex); // Log the error
+          console.error("Error fetching image:", ex); 
           return new EmbedBuilder()
             .setDescription("gagal mengambil foto, maaf ya")
             .setColor('#78ceda')
@@ -67,7 +64,7 @@ export default {
       const embed = await genReaction(choice);
       await interaction.followUp({ embeds: [embed] });
     } catch (error) {
-      console.error("Command error:", error); // Log the command execution error
+      console.error("Command error:", error); 
       await interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
     }
   },
